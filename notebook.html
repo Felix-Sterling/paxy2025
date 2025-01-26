@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大爱通</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const updateLogItems = document.querySelectorAll('.update-log-item');
+            updateLogItems.forEach(item => {
+                const header = item.querySelector('.update-log-header');
+                header.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                });
+            });
+
+            const backButton = document.querySelector('.back-button');
+            backButton.addEventListener('click', function () {
+                // 这里可以添加具体的返回逻辑，例如返回上一页
+                window.history.back();
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <header class="header">
+        <a href="#" class="back-button">
+            <i class="fa fa-chevron-left"></i>
+        </a>
+        <h1 class="header-title">大爱通更新日志</h1>
+    </header>
+    <section class="update-log-section">
+        <h2 class="update-log-title">更新日志</h2>
+        <ul class="update-log-list">
+            <li class="update-log-item">
+                <div class="update-log-header">
+                    <span class="update-log-date">2024-01-01</span>
+                    <span class="update-log-summary">重要功能更新</span>
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+                <div class="update-log-content">
+                    <p>本次更新带来了以下重要功能：</p>
+                    <ul>
+                        <li>新增了视频播放功能，用户可以直接在应用内观看相关视频。</li>
+                        <li>优化了界面布局，提升了用户体验。</li>
+                        <li>修复了一些已知的小问题，提高了系统稳定性。</li>
+                    </ul>
+                </div>
+            </li>
+            <li class="update-log-item">
+                <div class="update-log-header">
+                    <span class="update-log-date">2023-12-15</span>
+                    <span class="update-log-summary">小更新</span>
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+                <div class="update-log-content">
+                    <p>本次小更新主要进行了以下调整：</p>
+                    <ul>
+                        <li>调整了部分图标显示效果。</li>
+                        <li>优化了消息通知功能。</li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </section>
+</body>
+
+</html>

@@ -1,25 +1,130 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大爱通</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- 引入外部 auth0.js -->
-    <script src="https://cdn.authing.co/packages/guard/5.1.5/guard.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.authing.co/packages/guard/5.1.5/guard.min.css" />
-    <script src="javascripts/auth0.js" defer></script>
+    <script>
+        // 封装获取元素的函数，减少重复代码
+        function getElementById(id) {
+            const element = document.getElementById(id);
+            if (!element) {
+                console.error(`未找到 ID 为 ${id} 的元素`);
+                return null;
+            }
+            return element;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                // 检查 localStorage 是否可用
+                if (typeof localStorage !== 'undefined') {
+                    // 检查是否是第一次使用
+                    const isFirstUse = localStorage.getItem('isFirstUse') === null;
+
+                    if (isFirstUse) {
+                        // 显示弹窗
+                        const welcomeModal = getElementById('welcome-modal');
+                        if (welcomeModal) {
+                            welcomeModal.style.display = 'flex';
+                        }
+
+                        const mainContent = getElementById('main-content');
+                        if (mainContent) {
+                            mainContent.style.display = 'none';
+                        }
+
+                        // 不同意并退出按钮
+                        const disagreeButton = getElementById('disagree-button');
+                        if (disagreeButton) {
+                            disagreeButton.addEventListener('click', function () {
+                                // 关闭弹窗并退出页面
+                                if (welcomeModal) {
+                                    welcomeModal.style.display = 'none';
+                                }
+                                window.close();
+                            });
+                        }
+
+                        // 同意并学习如何使用按钮
+                        const agreeButton = getElementById('agree-button');
+                        if (agreeButton) {
+                            agreeButton.addEventListener('click', function () {
+                                try {
+                                    // 关闭弹窗并显示主内容
+                                    if (welcomeModal) {
+                                        welcomeModal.style.display = 'none';
+                                    }
+                                    if (mainContent) {
+                                        mainContent.style.display = 'block';
+                                    }
+                                    // 标记为不是第一次使用
+                                    localStorage.setItem('isFirstUse', 'false');
+
+                                    const targetUrl = 'textbook.html';
+                                    console.log('即将跳转的地址:', targetUrl);
+                                    window.location.href = targetUrl;
+                                } catch (error) {
+                                    console.error('点击同意按钮跳转时出错:', error);
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    console.error('localStorage 不可用');
+                }
+
+                // 处理更新日志项的点击展开/收缩逻辑，使用事件委托优化性能
+                const updateLogContainer = document.querySelector('.update-log-container');
+                if (updateLogContainer) {
+                    updateLogContainer.addEventListener('click', function (event) {
+                        if (event.target.classList.contains('update-log-header')) {
+                            const item = event.target.closest('.update-log-item');
+                            item.classList.toggle('active');
+                        }
+                    });
+                }
+
+                // 处理返回按钮的点击逻辑
+                const backButton = document.querySelector('.back-button');
+                if (backButton) {
+                    backButton.addEventListener('click', function () {
+                        window.history.back();
+                    });
+                }
+
+            } catch (error) {
+                console.error('DOMContentLoaded 事件处理过程中出现错误:', error);
+            }
+        });
+    </script>
 </head>
 
 <body>
-    <div id="authing-guard-container"></div>
+    <!-- 欢迎弹窗 -->
+    <div id="welcome-modal" class="welcome-modal">
+        <div class="welcome-modal-content">
+            <h2>欢迎使用大爱通</h2>
+            <p>请阅读我们的 <a href="about/orders.html">使用条款</a> 和 <a href="about/privacy.html">隐私政策</a> 。</p>
+            <p>使用此服务即代表你已获得班主任许可。</p>
+            <p>点击“同意并继续”即代表你已阅读并同意我们的使用条款与隐私政策。</p>
+            <p>本网页由 <a href="https://github.io">@Github Pages</a> 以及 <a href="https://netlify.com">@Netlify Sites</a> 运营。</p>
+            <p>本网页仅做研究添加号码原理使用,禁止用于商业用途。</p>
+            <div class="welcome-modal-buttons">
+                <button id="disagree-button" aria-label="不同意使用条款并退出">不同意并退出</button>
+                <button id="agree-button" aria-label="同意使用条款并学习如何使用">同意并学习如何使用</button>
+            </div>
+        </div>
+    </div>
 
     <div class="header">
         <div class="profile">
             <img src="images/profile.png" alt="Profile">
             <div class="profile-info" id="profile-username">
-                胖猫<br>2022级99班
+                大爱通<br>管理员
             </div>
         </div>
         <div class="settings">
@@ -27,18 +132,18 @@
         </div>
     </div>
 
-    <div class="school-section">学校名称</div>
+    <div class="school-section">家里蹲中学</div>
 
     <div class="icons">
         <a href="student_card.html" class="icon"><i class="fa-solid fa-tablet-button fa-2x" style="color: #4CAF50;"></i><br>学生证</a>
-        <a href="school_notice.html" class="icon"><i class="fa-solid fa-bell fa-2x" style="color: #FF9800;"></i><br>家校通知</a>
-        <a href="homework.html" class="icon"><i class="fa-solid fa-book fa-2x" style="color: #2196F3;"></i><br>家庭作业</a>
+        <a href="textbook.html" class="icon"><i class="fa-solid fa-book fa-2x" style="color: #2196F3;"></i><br>使用教程</a>
+        <a href="notebook.html" class="icon"><i class="fa-solid fa-bell fa-2x" style="color: #FF9800;"></i><br>更新日志</a>
         <a href="schedule.html" class="icon"><i class="fa-solid fa-calendar fa-2x" style="color: #FF5722;"></i><br>课程表</a>
         <a href="grades.html" class="icon"><i class="fa-solid fa-flag fa-2x" style="color: #E91E63;"></i><br>成绩单</a>
         <a href="leave_request.html" class="icon"><i class="fa-solid fa-clipboard-list fa-2x" style="color: #8BC34A;"></i><br>请假条</a>
         <a href="travel_pass.html" class="icon"><i class="fa-solid fa-suitcase fa-2x" style="color: #FFEB3B;"></i><br>放行条</a>
         <a href="entry_record.html" class="icon"><i class="fa-solid fa-door-open fa-2x" style="color: #673AB7;"></i><br>出入记录</a>
-        <a href="class_chain.html" class="icon"><i class="fa-solid fa-users fa-2x" style="color: #03A9F4;"></i><br>班级接龙</a>
+        <a href="https://paxy.xiaoaitong.com" class="icon"><i class="fa-solid fa-users fa-2x" style="color: #03A9F4;"></i><br>登录</a>
     </div>
 
     <div class="info-section">
@@ -61,4 +166,5 @@
     </div>
 
 </body>
+
 </html>
