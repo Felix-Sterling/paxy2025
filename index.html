@@ -6,69 +6,18 @@
     <title>校园门户</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 引入外部 auth0.js -->
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/1.24/auth0-spa-js.production.js"></script>
+    <script src="javascripts/auth0.js" defer></script>
 </head>
-<script src="https://cdn.auth0.com/js/auth0-spa-js/1.24/auth0-spa-js.production.js"></script>
-<script>
-    const auth0Domain = "dev-fny3v3cp2k7jlczw.us.auth0.com";  // Auth0 域名
-    const auth0ClientId = "ChLVFB0oVZzZscQoOVlUY5usHXpBtXzA";  // 客户端 ID
-
-    async function checkAuth() {
-        const auth0Client = await createAuth0Client({
-            domain: auth0Domain,
-            client_id: auth0ClientId,
-            cacheLocation: 'localstorage',
-            useRefreshTokens: true
-        });
-
-        // 处理 Auth0 重定向回调
-        const query = window.location.search;
-        if (query.includes("code=") && query.includes("state=")) {
-            await auth0Client.handleRedirectCallback();
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-
-        const isAuthenticated = await auth0Client.isAuthenticated();
-        if (!isAuthenticated) {
-            // 未登录时，保存当前 URL 并跳转到 Auth0 登录
-            localStorage.setItem('redirectUrl', window.location.href);
-            await auth0Client.loginWithRedirect({
-                redirect_uri: window.location.origin
-            });
-        } else {
-            // 已登录，获取用户信息
-            const user = await auth0Client.getUser();
-            document.getElementById("user-info").innerHTML = `欢迎, ${user.name}`;
-
-            // 登录后跳转回用户之前的页面
-            const redirectUrl = localStorage.getItem('redirectUrl');
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-                localStorage.removeItem('redirectUrl');
-            }
-        }
-    }
-
-    checkAuth();
-
-    async function logout() {
-        const auth0Client = await createAuth0Client({
-            domain: auth0Domain,
-            client_id: auth0ClientId
-        });
-        auth0Client.logout({
-            returnTo: window.location.origin  // 退出后返回主页
-        });
-    }
-</script>
-
-<div id="user-info">加载中...</div>
 
 <body>
+    <div id="user-info">加载中...</div>
 
     <div class="header">
         <div class="profile">
             <img src="images/profile.png" alt="Profile">
-            <div class="profile-info">
+            <div class="profile-info" id="profile-username">
                 姓名<br>20**级*班
             </div>
         </div>
@@ -100,7 +49,7 @@
     </div>
 
     <div class="footer">
-        由小爱通提供技术支持
+        大爱通 version0.1.14(内部版本0001)
     </div>
 
     <div class="bottom-nav">
