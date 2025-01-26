@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园门户</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/1.24/auth0-spa-js.production.js"></script>
+<script>
+    const auth0Domain = "dev-fny3v3cp2k7jlczw.us.auth0.com";  // 你的 Auth0 域名
+    const auth0ClientId = "ChLVFB0oVZzZscQoOVlUY5usHXpBtXzA";  // 你的客户端 ID
+
+    async function checkAuth() {
+        const auth0Client = await createAuth0Client({
+            domain: auth0Domain,
+            client_id: auth0ClientId,
+            cacheLocation: 'localstorage',
+            useRefreshTokens: true
+        });
+
+        const isAuthenticated = await auth0Client.isAuthenticated();
+        if (!isAuthenticated) {
+            // 保存当前 URL，跳转到 login.html
+            localStorage.setItem('redirectUrl', window.location.href);
+            window.location.href = "https://paxy.netlify.app/login.aspx0";
+        } else {
+            const user = await auth0Client.getUser();
+            document.getElementById("user-info").innerHTML = `欢迎, ${user.name}`;
+        }
+    }
+
+    checkAuth();
+</script>
+
+<div id="user-info">加载中...</div>
+
+<body>
+
+    <div class="header">
+        <div class="profile">
+            <img src="images/profile.png" alt="Profile">
+            <div class="profile-info">
+                姓名<br>20**级*班
+            </div>
+        </div>
+        <div class="settings">
+            <i class="fa-solid fa-gear fa-xl" style="color: #ffffff;"></i>
+        </div>
+    </div>
+
+    <div class="school-section">学校名称</div>
+
+    <div class="icons">
+        <a href="student_card.html" class="icon"><i class="fa-solid fa-tablet-button fa-2x" style="color: #4CAF50;"></i><br>学生证</a>
+        <a href="school_notice.html" class="icon"><i class="fa-solid fa-bell fa-2x" style="color: #FF9800;"></i><br>家校通知</a>
+        <a href="homework.html" class="icon"><i class="fa-solid fa-book fa-2x" style="color: #2196F3;"></i><br>家庭作业</a>
+        <a href="schedule.html" class="icon"><i class="fa-solid fa-calendar fa-2x" style="color: #FF5722;"></i><br>课程表</a>
+        <a href="grades.html" class="icon"><i class="fa-solid fa-flag fa-2x" style="color: #E91E63;"></i><br>成绩单</a>
+        <a href="leave_request.html" class="icon"><i class="fa-solid fa-clipboard-list fa-2x" style="color: #8BC34A;"></i><br>请假条</a>
+        <a href="travel_pass.html" class="icon"><i class="fa-solid fa-suitcase fa-2x" style="color: #FFEB3B;"></i><br>放行条</a>
+        <a href="entry_record.html" class="icon"><i class="fa-solid fa-door-open fa-2x" style="color: #673AB7;"></i><br>出入记录</a>
+        <a href="class_chain.html" class="icon"><i class="fa-solid fa-users fa-2x" style="color: #03A9F4;"></i><br>班级接龙</a>
+    </div>
+
+    <div class="info-section">
+        <a href="student_info.html" class="info-item"><i class="fa-solid fa-user-graduate fa-lg" style="color: #FFC107;"></i> 学生资料</a>
+        <a href="parent_info.html" class="info-item"><i class="fa-solid fa-user-group fa-lg" style="color: #03A9F4;"></i> 家长资料</a>
+        <a href="face_scan.html" class="info-item"><i class="fa-solid fa-face-smile fa-lg" style="color: #FF9800;"></i> 门禁刷脸</a>
+        <a href="visitor_booking.html" class="info-item"><i class="fa-solid fa-handshake fa-lg" style="color: #4CAF50;"></i> 访客预约</a>
+        <a href="customer_service.html" class="info-item"><i class="fa-solid fa-headset fa-lg" style="color: #9C27B0;"></i> 专属客服</a>
+    </div>
+
+    <div class="footer">
+        由小爱通提供技术支持
+    </div>
+
+    <div class="bottom-nav">
+        <a href="messages.html"><i class="fa-solid fa-comment-dots"></i><br>消息</a>
+        <a href="school.html" class="active"><i class="fa-solid fa-school"></i><br>家校</a>
+        <a href="location.html"><i class="fa-solid fa-location-dot"></i><br>定位</a>
+        <a href="profile.html"><i class="fa-solid fa-user"></i><br>我的</a>
+    </div>
+
+</body>
+</html>
