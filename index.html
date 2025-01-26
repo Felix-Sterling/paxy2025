@@ -9,8 +9,8 @@
 </head>
 <script src="https://cdn.auth0.com/js/auth0-spa-js/1.24/auth0-spa-js.production.js"></script>
 <script>
-    const auth0Domain = "dev-fny3v3cp2k7jlczw.us.auth0.com";  // 你的 Auth0 域名
-    const auth0ClientId = "ChLVFB0oVZzZscQoOVlUY5usHXpBtXzA";  // 你的客户端 ID
+    const auth0Domain = "dev-fny3v3cp2k7jlczw.us.auth0.com";  // Auth0 域名
+    const auth0ClientId = "ChLVFB0oVZzZscQoOVlUY5usHXpBtXzA";  // 客户端 ID
 
     async function checkAuth() {
         const auth0Client = await createAuth0Client({
@@ -20,18 +20,45 @@
             useRefreshTokens: true
         });
 
+        // 处理 Auth0 重定向回调
+        const query = window.location.search;
+        if (query.includes("code=") && query.includes("state=")) {
+            await auth0Client.handleRedirectCallback();
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
         const isAuthenticated = await auth0Client.isAuthenticated();
         if (!isAuthenticated) {
-            // 保存当前 URL，跳转到 login.html
+            // 未登录时，保存当前 URL 并跳转到 Auth0 登录
             localStorage.setItem('redirectUrl', window.location.href);
-            window.location.href = "https://paxy.netlify.app/login.aspx0";
+            await auth0Client.loginWithRedirect({
+                redirect_uri: window.location.origin
+            });
         } else {
+            // 已登录，获取用户信息
             const user = await auth0Client.getUser();
             document.getElementById("user-info").innerHTML = `欢迎, ${user.name}`;
+
+            // 登录后跳转回用户之前的页面
+            const redirectUrl = localStorage.getItem('redirectUrl');
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+                localStorage.removeItem('redirectUrl');
+            }
         }
     }
 
     checkAuth();
+
+    async function logout() {
+        const auth0Client = await createAuth0Client({
+            domain: auth0Domain,
+            client_id: auth0ClientId
+        });
+        auth0Client.logout({
+            returnTo: window.location.origin  // 退出后返回主页
+        });
+    }
 </script>
 
 <div id="user-info">加载中...</div>
