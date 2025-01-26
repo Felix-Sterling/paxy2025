@@ -7,12 +7,14 @@
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- 引入外部 auth0.js -->
-    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+    <script src="https://cdn.authing.co/packages/guard/5.1.5/guard.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.authing.co/packages/guard/5.1.5/guard.min.css" />
     <script src="javascripts/auth0.js" defer></script>
 </head>
 
 <body>
     <div id="user-info">加载中...</div>
+    <div id="authing-guard-container"></div>
 
     <div class="header">
         <div class="profile">
@@ -49,7 +51,7 @@
     </div>
 
     <div class="footer">
-        大爱通 version0.1.14(内部版本0001)
+        大爱通 version0.1.14(内部版本0003)
     </div>
 
     <div class="bottom-nav">
