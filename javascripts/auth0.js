@@ -59,3 +59,4 @@ async function initializeAuth0() {
 initializeAuth0().catch((error) => {
     console.error("Failed to initialize Auth0: ", error);
 });
+console.log("createAuth0Client:", window.createAuth0Client);
