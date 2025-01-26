@@ -23,9 +23,13 @@ async function checkAuthStatus() {
         link.classList.add('disabled'); // 添加禁用样式
       });
 
+      console.log("User not authenticated, redirecting to login...");
       // 保存当前页面的 URL，跳转到登录页面
       localStorage.setItem('redirectUrl', 'https://console.authing.cn/console/get-started/67961a84f5c2d03466d8f05f'); // 使用指定的重定向链接
-      guard.loginWithRedirect();
+      guard.loginWithRedirect().catch(error => {
+        console.error("Error during login redirection: ", error); // 输出登录重定向错误
+        alert("身份验证出错，请稍后再试");
+      });
       return; // 跳转后代码不会继续执行
     }
 
