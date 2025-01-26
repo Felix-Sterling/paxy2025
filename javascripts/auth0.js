@@ -1,35 +1,23 @@
 async function checkAuthStatus() {
   try {
-    // 找到并显示“加载中”元素
-    const loadingElement = document.getElementById('loading-spinner');
-    if (loadingElement) {
-      loadingElement.style.display = 'block'; // 显示加载中
-    }
-
     const user = await guard.getUser();
+    const links = document.querySelectorAll('a.icon'); // 选择所有 .icon 的 <a> 标签
 
-    // 隐藏“加载中”元素
-    if (loadingElement) {
-      loadingElement.style.display = 'none'; // 登录完成后隐藏加载中
-    }
-
-    const links = document.querySelectorAll('a.icon'); // 选中所有导航链接
-
+    // 如果用户没有登录
     if (!user) {
-      // 用户未登录时，禁用所有导航链接
+      console.warn("User not authenticated, redirecting to login...");
+      
+      // 禁用所有链接
       links.forEach(link => {
         link.setAttribute('data-href', link.getAttribute('href')); // 保存原始 href
         link.removeAttribute('href'); // 移除 href 使其无法跳转
+        link.style.pointerEvents = 'none'; // 禁用点击事件
         link.classList.add('disabled'); // 添加禁用样式
       });
 
-      console.log("User not authenticated, redirecting to login...");
       // 保存当前页面的 URL，跳转到登录页面
-      localStorage.setItem('redirectUrl', 'https://console.authing.cn/console/get-started/67961a84f5c2d03466d8f05f'); // 使用指定的重定向链接
-      guard.loginWithRedirect().catch(error => {
-        console.error("Error during login redirection: ", error); // 输出登录重定向错误
-        alert("身份验证出错，请稍后再试");
-      });
+      localStorage.setItem('redirectUrl', window.location.href);
+      await guard.loginWithRedirect(); // 使用 async/await 确保登录过程完成
       return; // 跳转后代码不会继续执行
     }
 
@@ -39,6 +27,7 @@ async function checkAuthStatus() {
         link.setAttribute('href', link.getAttribute('data-href')); // 还原 href
         link.removeAttribute('data-href');
       }
+      link.style.pointerEvents = ''; // 恢复点击事件
       link.classList.remove('disabled'); // 移除禁用样式
     });
 
@@ -55,15 +44,7 @@ async function checkAuthStatus() {
 
   } catch (error) {
     console.error("Authentication process error:", error);
-
-    // 隐藏“加载中”元素
-    const loadingElement = document.getElementById('loading-spinner');
-    if (loadingElement) {
-      loadingElement.style.display = 'none';
-    }
-
-    // 确保在认证失败时不会弹出错误提示并跳转
-    alert("身份验证出错，请刷新页面或联系客服");
+    alert("身份验证出错，请刷新页面或联系管理员");
   }
 }
 
