@@ -1,0 +1,151 @@
+@font-face {
+    font-family: 'HarmonyOS Sans';
+    src: url('https://cdn.jsdelivr.net/gh/HarmonyOS/HarmonyOS-Sans/fonts/HarmonyOS_Sans_SC_Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'HarmonyOS Sans', Arial, sans-serif;
+    color: #000; /* 设置全局字体颜色为黑色 */
+    line-height: 1.6; /* 增加行高，使文字更加舒适 */
+    margin: 0;
+    padding: 0;
+}
+
+header, .header, .footer {
+    font-family: 'HarmonyOS Sans', Arial, sans-serif;
+}
+
+.header {
+    background: linear-gradient(to bottom, #00c6a9, #009879);
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    align-items: center;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile img {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+    border: 2px solid white;
+}
+
+.profile-info {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.school-section {
+    background: #007cba;
+    color: white;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.icons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 15px;
+    margin: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 图标和文本居中 */
+    text-align: center; /* 图标和文本居中对齐 */
+    font-size: 14px;
+    color: #333;
+    padding-left: 10px;
+}
+
+.icon i {
+    margin-bottom: 5px;
+}
+
+.icon img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+}
+
+.info-section {
+    background: white;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+    padding-left: 10px;
+    color: #333;
+    transition: background 0.3s ease;
+    width: 100%;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item img {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+}
+
+.info-item:hover {
+    background-color: #f4f4f4; /* 鼠标悬停时改变背景 */
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 14px;
+    background: #f4f4f4;
+}
+
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    background: #fff;
+    padding: 15px 0;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+
+.bottom-nav a {
+    text-decoration: none;
+    color: gray;
+    font-size: 14px;
+    text-align: center;
+}
+
+.bottom-nav .active {
+    color: #009879;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+}
