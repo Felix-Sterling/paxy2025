@@ -18,9 +18,42 @@
             });
 
             const backButton = document.querySelector('.back-button');
-            backButton.addEventListener('click', function () {
-                // 这里可以添加具体的返回逻辑，例如返回上一页
-                window.history.back();
+            if (backButton) { // 确保 backButton 存在
+                backButton.addEventListener('click', function () {
+                    window.history.back();
+                });
+            }
+
+            const helpButton = document.getElementById('help-button');
+            const helpModal = document.getElementById('help-modal');
+            const modalClose = document.getElementById('modal-close');
+
+            helpButton.addEventListener('click', () => {
+                helpModal.classList.add('show');
+                helpModal.style.display = 'flex';
+            });
+
+            modalClose.addEventListener('click', () => {
+                helpModal.classList.remove('show');
+                setTimeout(() => {
+                    helpModal.style.display = 'none';
+                }, 300); // 与动画持续时间一致
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target === helpModal) {
+                    helpModal.classList.remove('show');
+                    setTimeout(() => {
+                        helpModal.style.display = 'none';
+                    }, 300);
+                }
+            });
+
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                });
             });
         });
     </script>
@@ -81,6 +114,27 @@
             </li>
         </ul>
     </section>
+
+    <button class="help-button" id="help-button">我遇到了问题</button>
+
+    <div class="modal" id="help-modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close">&times;</span>
+            <div class="modal-header">常见问题与解答</div>
+            <div class="faq-item">
+                <div>问题：如何查看更新日志？</div>
+                <div class="faq-answer">回答：点击每条日志的标题即可展开查看详情。</div>
+            </div>
+            <div class="faq-item">
+                <div>问题：返回按钮无效怎么办？</div>
+                <div class="faq-answer">回答：请确保浏览器支持历史记录功能。</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div id="footer-content"></div>
+    </div>
 </body>
 
 </html>

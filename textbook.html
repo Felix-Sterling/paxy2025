@@ -1,30 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>大爱通</title>
-        <link rel="stylesheet" href="styles/styles.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const updateLogItems = document.querySelectorAll('.update-log-item');
-                updateLogItems.forEach(item => {
-                    const header = item.querySelector('.update-log-header');
-                    header.addEventListener('click', () => {
-                        item.classList.toggle('active');
-                    });
-                });
-    
-                const backButton = document.querySelector('.back-button');
-                backButton.addEventListener('click', function () {
-                    // 这里可以添加具体的返回逻辑，例如返回上一页
-                    window.history.back();
-                });
-            });
-        </script>
-    </head>
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大爱通</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="javascripts/main.js"></script>
+</head>
+
+<body>
     <header class="header">
         <a href="#" class="back-button">
             <i class="fa fa-chevron-left"></i>
@@ -32,27 +18,28 @@
         <h1 class="header-title">大爱通使用教程</h1>
     </header>
 
-    <body>
-        <div id="authing-guard-container"></div>
+    <div id="authing-guard-container"></div>
 
-        <div class="header">
-            <div class="profile">
-                <img src="images/profile.png" alt="Profile">
-                <div class="profile-info" id="profile-username">
-                    大爱通<br>管理员
-                </div>
-            </div>
-            <div class="settings">
-                <i class="fa-solid fa-gear fa-xl" style="color: #ffffff;"></i>
+    <div class="header">
+        <div class="profile">
+            <img src="images/profile.png" alt="Profile">
+            <div class="profile-info" id="profile-username">
+                大爱通<br>管理员
             </div>
         </div>
+        <div class="settings">
+            <i class="fa-solid fa-gear fa-xl" style="color: #ffffff;"></i>
+        </div>
+    </div>
+
     <section class="video-section">
         <div class="video-container">
-            <video controls>
-                <source src="1737941276577.mp4" type="video/mp4">
+            <video controls></video>
+                <source src="your-video-source.mp4" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
         </div>
     </section>
-    </body>
+</body>
+
 </html>

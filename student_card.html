@@ -1,30 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>大爱通</title>
-        <link rel="stylesheet" href="styles/styles.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const updateLogItems = document.querySelectorAll('.update-log-item');
-                updateLogItems.forEach(item => {
-                    const header = item.querySelector('.update-log-header');
-                    header.addEventListener('click', () => {
-                        item.classList.toggle('active');
-                    });
-                });
-    
-                const backButton = document.querySelector('.back-button');
-                backButton.addEventListener('click', function () {
-                    // 这里可以添加具体的返回逻辑，例如返回上一页
-                    window.history.back();
-                });
-            });
-        </script>
-    </head>
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大爱通</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="javascripts/back.js"></script>
+    <script src="javascripts/window.js"></script>
+    <script src="javascripts/main.js"></script>
+</head>
+
+<body>
     <header class="header">
         <a href="#" class="back-button">
             <i class="fa fa-chevron-left"></i>
@@ -32,7 +20,6 @@
         <h1 class="header-title">学生证</h1>
     </header>
 
-<body>
     <div id="authing-guard-container"></div>
 
     <div class="header">
@@ -47,9 +34,8 @@
         </div>
     </div>
 
-
     <div class="info-section">
-        <a href="dial_book.html" class="info-item"><i class="fa-solid fa-address-book" fa-lg style="color: #FFC107;"></i> 电话本</a>
+        <a href="dial_book.html" class="info-item"><i class="fa-solid fa-address-book fa-lg" style="color: #FFC107;"></i> 电话本</a>
         <a href="parent_info.html" class="info-item"><i class="fa-solid fa-user-group fa-lg" style="color: #03A9F4;"></i> 家长资料</a>
         <a href="face_scan.html" class="info-item"><i class="fa-solid fa-face-smile fa-lg" style="color: #FF9800;"></i> 门禁刷脸</a>
         <a href="visitor_booking.html" class="info-item"><i class="fa-solid fa-handshake fa-lg" style="color: #4CAF50;"></i> 访客预约</a>
@@ -57,7 +43,7 @@
     </div>
 
     <div class="footer">
-        大爱通 version1.0.0(内部版本2503)
+        <div id="footer-content"></div>
     </div>
 
     <div class="bottom-nav">
@@ -66,6 +52,6 @@
         <a href="location.html"><i class="fa-solid fa-location-dot"></i><br>定位</a>
         <a href="profile.html"><i class="fa-solid fa-user"></i><br>我的</a>
     </div>
-
 </body>
+
 </html>

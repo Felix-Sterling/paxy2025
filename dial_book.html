@@ -1,28 +1,128 @@
 <!DOCTYPE html>
 <html lang="zh">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>大爱通</title>
-        <link rel="stylesheet" href="styles/styles.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <script src="javascripts/back.js"></script>
-        <script src="javascripts/studentId.js"></script>
-    </head>
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大爱通</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="javascripts/back.js"></script>
+    <script src="javascripts/window.js"></script>
+    <script src="javascripts/main.js"></script>
+    <script src="javascripts/studentid.js"></script>
+</head>
+
+<body>
+    <div class="page-transition-overlay" id="page-transition-overlay"></div>
     <header class="header">
         <a href="#" class="back-button">
             <i class="fa fa-chevron-left"></i>
         </a>
         <h1 class="header-title">电话本中转页</h1>
-        
     </header>
 
-    <body>
-        <section class="input-section">
-            <input type="text" id="student-id-input" placeholder="Student ID 会显示在这里">
-            <button id="paste-and-go">粘贴并跳转</button>
-            <button id="copy-student-id">复制 studentid 以便下次使用</button>
-        </section>
-    </body>
-    </html>    
+    <section class="input-section">
+        <input type="text" id="student-id-input" placeholder="Student ID 会显示在这里">
+        <button id="paste-and-go">粘贴并跳转</button>
+        <button id="copy-student-id">复制 studentid 以便下次使用</button>
+    </section>
+
+    <button class="help-button" id="help-button">我遇到了问题</button>
+
+    <div class="modal" id="help-modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close">&times;</span>
+            <div class="modal-header">常见问题与解答</div>
+            <div class="faq-item">
+                Q：为何无法正常跳转
+                <div class="faq-answer">A:截图联系群主或管理员处理。</div>
+            </div>
+            <div class="faq-item">
+                Q：显示“请联系管理员”怎么办？
+                <div class="faq-answer">A：那你就去群里联系管理员啊。</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="process-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="process-modal-close">&times;</span>
+            <div class="modal-header">
+                <span>进程</span>
+                <span id="process-timer" class="process-timer">已用 0 秒</span>
+            </div>
+            <div id="process-subtitle" class="process-subtitle">准备中...</div>
+            <div class="loading-content">
+                <ul id="process-steps"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div id="footer-content"></div>
+        电话本版本 version0.1.3
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const helpButton = document.getElementById('help-button');
+            const helpModal = document.getElementById('help-modal');
+            const modalClose = document.getElementById('modal-close');
+            const pageTransitionOverlay = document.getElementById('page-transition-overlay');
+            const processModalClose = document.getElementById('process-modal-close');
+            const processModal = document.getElementById('process-modal');
+
+            function showPageTransition() {
+                pageTransitionOverlay.classList.add('active');
+                setTimeout(() => {
+                    pageTransitionOverlay.classList.remove('active');
+                }, 500); // 与 CSS 动画时间一致
+            }
+
+            helpButton.addEventListener('click', () => {
+                helpModal.classList.add('show');
+                helpModal.style.display = 'flex';
+            });
+
+            modalClose.addEventListener('click', () => {
+                helpModal.classList.remove('show');
+                setTimeout(() => {
+                    helpModal.style.display = 'none';
+                }, 300); // 与动画持续时间一致
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target === helpModal) {
+                    helpModal.classList.remove('show');
+                    setTimeout(() => {
+                        helpModal.style.display = 'none';
+                    }, 300);
+                }
+            });
+
+            processModalClose.addEventListener('click', () => {
+                processModal.classList.remove('show');
+                setTimeout(() => {
+                    processModal.style.display = 'none';
+                }, 300); // 与动画持续时间一致
+            });
+
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    faqItems.forEach(faq => faq.classList.remove('active')); // 关闭其他项
+                    if (!isActive) {
+                        item.classList.add('active'); // 展开当前项
+                    }
+                });
+            });
+
+            // 示例：页面加载时触发渐亮动画
+            showPageTransition();
+        });
+    </script>
+</body>
+
+</html>

@@ -7,103 +7,21 @@
     <title>大爱通</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script>
-        // 封装获取元素的函数，减少重复代码
-        function getElementById(id) {
-            const element = document.getElementById(id);
-            if (!element) {
-                console.error(`未找到 ID 为 ${id} 的元素`);
-                return null;
-            }
-            return element;
-        }
-
-        document.addEventListener('DOMContentLoaded', async function () {
-            try {
-                // 检查 localStorage 是否可用
-                if (typeof localStorage !== 'undefined') {
-                    // 检查是否是第一次使用
-                    const isFirstUse = localStorage.getItem('isFirstUse') === null;
-
-                    if (isFirstUse) {
-                        // 显示弹窗
-                        const welcomeModal = getElementById('welcome-modal');
-                        if (welcomeModal) {
-                            welcomeModal.style.display = 'flex';
-                        }
-
-                        const mainContent = getElementById('main-content');
-                        if (mainContent) {
-                            mainContent.style.display = 'none';
-                        }
-
-                        // 不同意并退出按钮
-                        const disagreeButton = getElementById('disagree-button');
-                        if (disagreeButton) {
-                            disagreeButton.addEventListener('click', function () {
-                                // 关闭弹窗并退出页面
-                                if (welcomeModal) {
-                                    welcomeModal.style.display = 'none';
-                                }
-                                window.close();
-                            });
-                        }
-
-                        // 同意并学习如何使用按钮
-                        const agreeButton = getElementById('agree-button');
-                        if (agreeButton) {
-                            agreeButton.addEventListener('click', function () {
-                                try {
-                                    // 关闭弹窗并显示主内容
-                                    if (welcomeModal) {
-                                        welcomeModal.style.display = 'none';
-                                    }
-                                    if (mainContent) {
-                                        mainContent.style.display = 'block';
-                                    }
-                                    // 标记为不是第一次使用
-                                    localStorage.setItem('isFirstUse', 'false');
-
-                                    const targetUrl = 'textbook.html';
-                                    console.log('即将跳转的地址:', targetUrl);
-                                    window.location.href = targetUrl;
-                                } catch (error) {
-                                    console.error('点击同意按钮跳转时出错:', error);
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    console.error('localStorage 不可用');
-                }
-
-                // 处理更新日志项的点击展开/收缩逻辑，使用事件委托优化性能
-                const updateLogContainer = document.querySelector('.update-log-container');
-                if (updateLogContainer) {
-                    updateLogContainer.addEventListener('click', function (event) {
-                        if (event.target.classList.contains('update-log-header')) {
-                            const item = event.target.closest('.update-log-item');
-                            item.classList.toggle('active');
-                        }
-                    });
-                }
-
-                // 处理返回按钮的点击逻辑
-                const backButton = document.querySelector('.back-button');
-                if (backButton) {
-                    backButton.addEventListener('click', function () {
-                        window.history.back();
-                    });
-                }
-
-            } catch (error) {
-                console.error('DOMContentLoaded 事件处理过程中出现错误:', error);
-            }
-        });
-    </script>
+    <script src="javascripts/back.js"></script>
+    <script src="javascripts/window.js"></script>
+    <script src="javascripts/main.js"></script>
 </head>
 
 <body>
+    <!-- 初始化加载层 -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>正在初始化，请稍候...</p>
+            <small>加载用户数据、配置文件和资源中...</small>
+        </div>
+    </div>
+
     <!-- 欢迎弹窗 -->
     <div id="welcome-modal" class="welcome-modal">
         <div class="welcome-modal-content">
@@ -120,6 +38,21 @@
         </div>
     </div>
 
+    <!-- 更新日志弹窗 -->
+    <div id="update-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">更新内容</div>
+            <div class="modal-body">
+                <ul>
+                    <li>优化了页面切换动画效果。</li>
+                    <li>新增“我遇到了问题”按钮。</li>
+                    <li>修复了一些已知问题。</li>
+                </ul>
+            </div>
+            <button id="update-modal-close" class="help-button">我知道了</button>
+        </div>
+    </div>
+
     <div class="header">
         <div class="profile">
             <img src="images/profile.png" alt="Profile">
@@ -132,9 +65,10 @@
         </div>
     </div>
 
-    <div class="school-section">阳光书院</div>
+    <div class="school-section">黔西南州</div>
 
     <div class="icons">
+        <a href="https://paxy.xiaoaitong.com" class="icon"><i class="fa-solid fa-users fa-2x" style="color: #03A9F4;"></i><br>登录</a>
         <a href="student_card.html" class="icon"><i class="fa-solid fa-tablet-button fa-2x" style="color: #4CAF50;"></i><br>学生证</a>
         <a href="textbook.html" class="icon"><i class="fa-solid fa-book fa-2x" style="color: #2196F3;"></i><br>使用教程</a>
         <a href="notebook.html" class="icon"><i class="fa-solid fa-bell fa-2x" style="color: #FF9800;"></i><br>更新日志</a>
@@ -143,7 +77,6 @@
         <a href="leave_request.html" class="icon"><i class="fa-solid fa-clipboard-list fa-2x" style="color: #8BC34A;"></i><br>请假条</a>
         <a href="travel_pass.html" class="icon"><i class="fa-solid fa-suitcase fa-2x" style="color: #FFEB3B;"></i><br>放行条</a>
         <a href="entry_record.html" class="icon"><i class="fa-solid fa-door-open fa-2x" style="color: #673AB7;"></i><br>出入记录</a>
-        <a href="https://paxy.xiaoaitong.com" class="icon"><i class="fa-solid fa-users fa-2x" style="color: #03A9F4;"></i><br>登录</a>
     </div>
 
     <div class="info-section">
@@ -155,7 +88,7 @@
     </div>
 
     <div class="footer">
-        大爱通 version1.0.0(内部版本2503)
+        <div id="footer-content"></div>
     </div>
 
     <div class="bottom-nav">
