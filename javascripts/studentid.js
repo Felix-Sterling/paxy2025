@@ -1,67 +1,96 @@
 document.addEventListener('DOMContentLoaded', async function () {
     const studentIdInput = document.getElementById('student-id-input');
     const pasteAndGoButton = document.getElementById('paste-and-go');
-    const copyStudentIdButton = document.getElementById('copy-student-id');
+    const processModal = document.getElementById('process-modal');
+    const processModalClose = document.getElementById('process-modal-close');
+    const processSpinner = document.getElementById('process-spinner');
+    const processSteps = document.getElementById('process-steps');
+    const processSubtitle = document.getElementById('process-subtitle');
+    const processTimer = document.getElementById('process-timer');
 
-    console.log("页面加载完成，按钮获取情况:", pasteAndGoButton, copyStudentIdButton);
+    let timerInterval;
+    let elapsedSeconds = 0;
 
-    function extractStudentId(text) {
-        const matches = text.match(/\d+/g);
-        if (matches) {
-            for (const match of matches) {
-                if (match.length >= 1 && match.length <= 10) {
-                    console.log("匹配到 studentId:", match);
-                    return match;
-                }
-            }
-        }
-        console.log("未匹配到有效 studentId");
-        return null;
+    function startTimer() {
+        elapsedSeconds = 0;
+        processTimer.textContent = `已用 ${elapsedSeconds} 秒`;
+        timerInterval = setInterval(() => {
+            elapsedSeconds++;
+            processTimer.textContent = `已用 ${elapsedSeconds} 秒`;
+        }, 1000);
+    }
+
+    function stopTimer() {
+        clearInterval(timerInterval);
+    }
+
+    async function updateSubtitle(text) {
+        processSubtitle.style.opacity = 0;
+        await new Promise(resolve => setTimeout(resolve, 200)); // 等待淡出动画完成
+        processSubtitle.textContent = text;
+        processSubtitle.style.opacity = 1;
+    }
+
+    function updateProcessStep(stepElement, text, isSuccess) {
+        stepElement.innerHTML = `<i class="fa-solid ${isSuccess ? 'fa-check' : 'fa-times'}"></i> ${text}`;
+        stepElement.classList.add('visible', isSuccess ? 'completed' : 'failed');
     }
 
     async function handlePasteAndGo() {
-        try {
-            let studentId = extractStudentId(studentIdInput.value);
+        processModal.classList.add('show');
+        processModal.style.display = 'flex';
+        processSteps.innerHTML = ''; // 清空之前的步骤
+        await updateSubtitle('准备中...'); // 初始化小标题
+        startTimer();
 
-            if (!studentId) {
-                try {
-                    const clipboardText = await navigator.clipboard.readText();
-                    console.log("剪贴板内容:", clipboardText);
-                    studentId = extractStudentId(clipboardText);
-                } catch (error) {
-                    console.error("无法读取剪贴板:", error);
-                    alert("无法读取剪贴板，请手动输入 Student ID。");
-                    return;
-                }
-            }
-
-            if (studentId) {
-                studentIdInput.value = studentId;
+        // 动态添加进程步骤
+        const steps = [
+            { subtitle: '检查输入内容', text: '正在检查输入内容...', action: async () => {
+                const inputValue = studentIdInput.value.trim();
+                return inputValue ? { success: true, message: `输入内容合法：${inputValue}` } : { success: false, message: '输入内容为空' };
+            }},
+            { subtitle: '检测 Student ID', text: '正在检测 Student ID...', action: async () => {
+                const matches = studentIdInput.value.match(/\d+/g);
+                const studentId = matches ? matches[0] : null;
+                return studentId ? { success: true, message: `检测到 Student ID：${studentId}` } : { success: false, message: '未找到有效的 Student ID' };
+            }},
+            { subtitle: '初始化', text: '正在初始化...', action: async () => {
+                return { success: true, message: '初始化完成' };
+            }},
+            { subtitle: '跳转中', text: '正在跳转...', action: async () => {
+                const studentId = studentIdInput.value.trim();
                 const url = `https://paxy.xiaoaitong.com/mb-device:phone_book/student_id-${studentId}`;
-                console.log("即将跳转到:", url);
                 window.location.href = url;
-            } else {
-                alert("未找到有效的 Student ID，请输入 1-10 位的数字。");
+                return { success: true, message: '跳转完成！' };
+            }}
+        ];
+
+        for (const step of steps) {
+            await updateSubtitle(step.subtitle); // 更新小标题
+            const stepElement = document.createElement('li');
+            stepElement.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${step.text}`;
+            processSteps.appendChild(stepElement);
+
+            await new Promise(resolve => setTimeout(resolve, 500)); // 模拟延迟
+            const result = await step.action();
+            updateProcessStep(stepElement, result.message, result.success);
+
+            if (!result.success) {
+                await updateSubtitle('进程失败');
+                stopTimer();
+                return; // 终止进程
             }
-        } catch (error) {
-            console.error("粘贴并跳转时出错:", error);
-            alert("发生错误，请检查浏览器权限或尝试手动输入。");
         }
+
+        await updateSubtitle('进程完成');
+        stopTimer();
     }
 
     pasteAndGoButton.addEventListener('click', handlePasteAndGo);
-    
-    copyStudentIdButton.addEventListener('click', function () {
-        const studentId = studentIdInput.value;
-        if (studentId) {
-            navigator.clipboard.writeText(studentId).then(() => {
-                alert('Student ID 已复制到剪贴板。');
-            }).catch((error) => {
-                console.error('复制 Student ID 时出错:', error);
-                alert('复制失败，请检查浏览器权限。');
-            });
-        } else {
-            alert('请先粘贴并跳转，获取 Student ID。');
-        }
+
+    processModalClose.addEventListener('click', () => {
+        processModal.classList.remove('show');
+        processModal.style.display = 'none';
+        stopTimer();
     });
 });
