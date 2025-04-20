@@ -212,14 +212,24 @@ body.fade-out {
 
 /* 调整返回按钮样式 */
 .back-button {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
     color: white;
-    margin-right: 20px;
-    font-size: 20px;
-    transition: transform 0.3s ease; /* 添加动画效果 */
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
 }
 
 .back-button:hover {
-    transform: scale(1.1); /* 悬停时放大 */
+    transform: scale(1.1);
+}
+
+.back-button:active {
+    transform: scale(0.95);
 }
 
 .profile {
