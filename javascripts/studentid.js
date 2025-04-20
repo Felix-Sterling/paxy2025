@@ -1,117 +1,101 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    const studentIdInput = document.getElementById('student-id-input');
     const pasteAndGoButton = document.getElementById('paste-and-go');
-    const processModal = document.getElementById('process-modal');
-    const processModalClose = document.getElementById('process-modal-close');
-    const processSpinner = document.getElementById('process-spinner');
-    const processSteps = document.getElementById('process-steps');
-    const processSubtitle = document.getElementById('process-subtitle');
-    const processTimer = document.getElementById('process-timer');
-
-    let timerInterval;
-    let elapsedSeconds = 0;
-    let extractedStudentId = null; // 新增：存储提取的 Student ID
-
-    function startTimer() {
-        elapsedSeconds = 0;
-        processTimer.textContent = `已用 ${elapsedSeconds} 秒`;
-        timerInterval = setInterval(() => {
-            elapsedSeconds++;
-            processTimer.textContent = `已用 ${elapsedSeconds} 秒`;
-        }, 1000);
-    }
-
-    function stopTimer() {
-        clearInterval(timerInterval);
-    }
-
-    async function updateSubtitle(text) {
-        processSubtitle.style.opacity = 0;
-        await new Promise(resolve => setTimeout(resolve, 200));
-        processSubtitle.textContent = text;
-        processSubtitle.style.opacity = 1;
-    }
-
-    function updateProcessStep(stepElement, text, isSuccess) {
-        stepElement.innerHTML = `<i class="fa-solid ${isSuccess ? 'fa-check' : 'fa-times'}"></i> ${text}`;
-        stepElement.classList.add('visible', isSuccess ? 'completed' : 'failed');
-    }
-
-    async function handlePasteAndGo() {
-        processModal.classList.add('show');
-        processModal.style.display = 'flex';
-        processSteps.innerHTML = '';
-        await updateSubtitle('准备中...');
-        startTimer();
-
-        // 修改后的步骤定义
-        const steps = [
-            { 
-                subtitle: '检查输入内容', 
-                text: '正在检查输入内容...', 
-                action: async () => {
-                    const inputValue = studentIdInput.value.trim();
-                    return inputValue 
-                        ? { success: true, message: `输入内容合法：${inputValue}` }
-                        : { success: false, message: '输入内容为空' };
-                }
-            },
-            { 
-                subtitle: '检测 Student ID', 
-                text: '正在检测 Student ID...', 
-                action: async () => {
-                    // 修改点1：精准匹配 student_id- 后的数字
-                    const match = studentIdInput.value.match(/student_id-(\d+)/);
-                    extractedStudentId = match ? match[1] : null; // 存储提取的 ID
-                    return extractedStudentId 
-                        ? { success: true, message: `检测到 Student ID：${extractedStudentId}` }
-                        : { success: false, message: '未找到有效的 Student ID' };
-                }
-            },
-            { 
-                subtitle: '初始化', 
-                text: '正在初始化...', 
-                action: async () => {
-                    return { success: true, message: '初始化完成' };
-                }
-            },
-            { 
-                subtitle: '跳转中', 
-                text: '正在跳转...', 
-                action: async () => {
-                    // 修改点2：使用已提取的 Student ID
-                    const url = `https://paxy.xiaoaitong.com/mb-family:student/student_id-${extractedStudentId}`;
-                    window.location.href = url;
-                    return { success: true, message: '跳转完成！' };
-                }
-            }
-        ];
-
-        for (const step of steps) {
-            await updateSubtitle(step.subtitle);
-            const stepElement = document.createElement('li');
-            stepElement.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${step.text}`;
-            processSteps.appendChild(stepElement);
-
-            await new Promise(resolve => setTimeout(resolve, 500));
-            const result = await step.action();
-            updateProcessStep(stepElement, result.message, result.success);
-
-            if (!result.success) {
-                await updateSubtitle('进程失败');
-                stopTimer();
-                return;
-            }
-        }
-
-        await updateSubtitle('进程完成');
-        stopTimer();
-    }
-
-    pasteAndGoButton.addEventListener('click', handlePasteAndGo);
-    processModalClose.addEventListener('click', () => {
-        processModal.classList.remove('show');
-        processModal.style.display = 'none';
-        stopTimer();
-    });
-});
+     const copyStudentIdButton = document.getElementById('copy-student-id');
+ 
+     console.log("页面加载完成，按钮获取情况:", pasteAndGoButton, copyStudentIdButton);
+ 
+     function extractStudentId(text) {
+         // 匹配所有连续的数字，并筛选出 1-10 位的数字
+         const matches = text.match(/\d+/g);
+         if (matches) {
+             for (const match of matches) {
+                 if (match.length >= 1 && match.length <= 10) {
+                     return match; // 返回第一个符合长度的匹配项
+                     console.log("匹配到 studentId:", match);
+                     return match;
+                 }
+             }
+         }
+         console.log("未匹配到有效 studentId");
+         return null;
+     }
+ 
+     async function autoPasteAndGo() {
+         try {
+             let studentId = extractStudentId(studentIdInput.value);
+ 
+             if (!studentId) {
+                 const clipboardText = await navigator.clipboard.readText();
+                 studentId = extractStudentId(clipboardText);
+             }
+ 
+             if (studentId) {
+                 studentIdInput.value = studentId;
+                 const url = `https://paxy.xiaoaitong.com/mb-device:phone_book/student_id-${studentId}`;
+                 alert(`检测到 studentId ${studentId}，即将跳转`);
+                 setTimeout(() => {
+                     window.location.href = url;
+                 }, 2000);
+             } else {
+                 alert('未找到有效的 studentId，请手动输入或检查剪贴板内容。');
+             }
+         } catch (error) {
+             console.error('自动粘贴并跳转时出错:', error);
+         }
+     }
+ 
+     await autoPasteAndGo();
+ 
+     pasteAndGoButton.addEventListener('click', async function () {
+     async function handlePasteAndGo() {
+         try {
+             let studentId = extractStudentId(studentIdInput.value);
+ 
+             if (!studentId) {
+                 const clipboardText = await navigator.clipboard.readText();
+                 studentId = extractStudentId(clipboardText);
+                 try {
+                     const clipboardText = await navigator.clipboard.readText();
+                     console.log("剪贴板内容:", clipboardText);
+                     studentId = extractStudentId(clipboardText);
+                 } catch (error) {
+                     console.error("无法读取剪贴板:", error);
+                     alert("无法读取剪贴板，请手动输入 Student ID。");
+                     return;
+                 }
+             }
+ 
+             if (studentId) {
+                 studentIdInput.value = studentId;
+                 const url = `https://paxy.xiaoaitong.com/mb-device:phone_book/student_id-${studentId}`;
+                 console.log("即将跳转到:", url);
+                 window.location.href = url;
+             } else {
+                 alert('未找到有效的 studentId，请手动输入或确保剪贴板中有 1-10 位的数字。');
+                 alert("未找到有效的 Student ID，请输入 1-10 位的数字。");
+             }
+         } catch (error) {
+             console.error('粘贴并跳转时出错:', error);
+             alert('读取剪贴板内容时出错，请确保浏览器支持并授予权限。');
+             console.error("粘贴并跳转时出错:", error);
+             alert("发生错误，请检查浏览器权限或尝试手动输入。");
+         }
+     });
+     }
+ 
+     pasteAndGoButton.addEventListener('click', handlePasteAndGo);
+     
+     copyStudentIdButton.addEventListener('click', function () {
+         const studentId = studentIdInput.value;
+         if (studentId) {
+             navigator.clipboard.writeText(studentId).then(() => {
+                 alert('Student ID 已复制到剪贴板。');
+             }).catch((error) => {
+                 console.error('复制 Student ID 时出错:', error);
+                 alert('复制 Student ID 时出错，请确保浏览器支持并授予权限。');
+                 alert('复制失败，请检查浏览器权限。');
+             });
+         } else {
+             alert('请先粘贴并跳转，获取 Student ID。');
+         }
+     });
+ });
