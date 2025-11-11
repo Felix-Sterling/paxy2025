@@ -96,13 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, index * 1000); // 每步间隔 1 秒
     });
 
-    // 检查 localStorage 是否已确认更新通知
-    const updateConfirmed = localStorage.getItem('updateConfirmed');
-    if (!updateConfirmed) {
-        updateModal.classList.add('show');
-        updateModal.style.display = 'flex';
-    }
-
     // 关闭更新弹窗并记录状态
     closeModalButton.addEventListener('click', () => {
         updateModal.classList.remove('show');
@@ -151,4 +144,5 @@ document.addEventListener('DOMContentLoaded', function() {
             }, index * 1000); // 每步间隔 1 秒
         });
     });
+
 });
